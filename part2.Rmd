@@ -1,0 +1,32 @@
+---
+title: "Tooth Growth Analysis"
+author: Nathan Buesgens
+output: html_document
+---
+
+```{r}
+library(datasets)
+summary(ToothGrowth)
+```
+
+## Relationship between choice of supplement and tooth growth
+A null hypothesis - that the choice of supplement has no effect on tooth growth - would imply that the mean tooth growth with OJ equals the mean tooth growth with VC. The null hypothesis will be rejected if the mean tooth growth differs with a significance level of 5%.
+
+```{r}
+t.test(ToothGrowth[ToothGrowth$supp=="VC",]$len, ToothGrowth[ToothGrowth$supp=="OJ",]$len, var.equal = TRUE)
+```
+#### conclusion and assumptions
+The sample difference in length is $3.7$. The probability of this result assuming the null hypothesis is $0.06039$. Therefore, this result is not significant enough to reject the null hypothesis.
+
+This analysis assumes equal variance in the two populations and that they are IID.
+
+## Relationship between dose and tooth growth
+A null hypothesis - that the dosage has no effect on tooth growth - would imply that the difference in mean tooth growth between any two dosages would equal zero. The null hypothesis will be rejected if the mean tooth growth between any two dosages differs with a significance level of 5%.
+```{r}
+t.test(ToothGrowth[ToothGrowth$dose==0.5,]$len, ToothGrowth[ToothGrowth$dose==2.0,]$len, var.equal = TRUE)
+```
+#### conclusion and assumptions
+The likelihood of the results assuming the null hypothesis is $2.838e^{-14}$. This is less than the significance level of 5%. The null hypothesis is rejected in favor of the alternative hypothesis.
+
+This analysis assumes that variance of the populations is equal, and that they are IID.
+
