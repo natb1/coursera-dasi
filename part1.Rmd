@@ -1,0 +1,85 @@
+---
+title: "Application of the Central Limit Theorem to the Exponential Distribution"
+author: "Nathan Buesgens"
+output: html_document
+---
+
+This report uses simulated samples from an exponential distribution to demonstrate the
+principles of the Central Limit Theorem. Sample mean, variance, and distribution will approximate
+population mean, variance and distribution as sample size grows large. Regardless of the population distribution, the Central
+Limit Theorem states that sample means will be normally distributed about the population mean with variance inversely proportional to the sample size.
+
+```{r, echo=FALSE}
+lambda = 0.2
+population_mean = 1/lambda
+population_sd = 1/lambda
+```
+
+## Simulations
+The following data is a simulation of a sample of size n = 1000 from a population that has an exponential distribution:
+```{r}
+n = 1000
+single_sample = rexp(n, lambda)
+```
+This is to be compared to data that is a simulation of m = 1000 samples of size n = 40 from a population that has an exponential distribution:
+```{r}
+m = 1000
+n = 40
+fourty_sample_means = NULL
+for (i in 1 : m) fourty_sample_means = c(fourty_sample_means, mean(rexp(n, lambda)))
+```
+
+## Sample Mean vs Theoretical Mean
+The sample mean of a single sample approximates the population mean as n grows large by
+the Law of Large Numbers. Here the sample mean is blue and the population mean in red:
+
+```{r, fig.width=5, fig.height=2.5, echo=FALSE}
+single_sample_mean = mean(single_sample)
+hist(single_sample, main="Mean of a Single Sample", xlab="index")
+abline(v = single_sample_mean, col = "blue", lwd = 2)
+abline(v = population_mean, col = "red", lwd = 2)
+```
+
+The mean of sample means are normally distributed by the Central Limit Theorem, centered
+around the population mean:
+
+```{r, fig.width=5, fig.height=2.5, echo=FALSE}
+mean_of_means = mean(fourty_sample_means)
+hist(fourty_sample_means, main="Mean of Sample Means", xlab="mean")
+abline(v = mean_of_means, col = "blue", lwd = 2)
+abline(v = population_mean, col = "red", lwd = 2)
+```
+
+## Sample Variance vs Theoretical Variance
+
+The population variance can be approximated by the sample variance:
+
+```{r, fig.width=5, fig.height=2.5, echo=FALSE}
+hist(single_sample, main="Sample Variance", xlab="index")
+abline(v=single_sample_mean, lwd=2)
+abline(v=single_sample_mean + sd(single_sample), col="blue")
+abline(v=single_sample_mean + population_sd, col="red")
+```
+
+The variance of sample means is $\sigma^2/n$ by the Central Limit Theorem. The population variance
+can be approximated by the sample variance. The blue line is one standard deviation from the mean approximated by a single sample variance. The red line is one standard deviation calculated using the population variance:
+
+```{r, fig.width=5, fig.height=2.5, echo=FALSE}
+mean_sd = sd(rexp(n, lambda))/sqrt(n)
+hist(fourty_sample_means, main="Variance of Sample Means", xlab="mean")
+abline(v = mean_of_means, lwd = 2)
+abline(v = mean_of_means + mean_sd, col = "blue", lwd = 2)
+abline(v = population_mean + population_sd/sqrt(n), col = "red", lwd = 2)
+```
+
+## Distribution
+
+Random samples from a population will have a distribution similar to the population while
+by the Central Limit Theorem means of samples will be distributed normally regardless of the population distribution:
+
+```{r, fig.width=5, fig.height=2.5, echo=FALSE}
+hist(fourty_sample_means, main="Distribution of Sample Means", xlab="mean", prob=TRUE)
+lines(seq(0, 8, length = 100), dnorm(seq(0, 8, length = 100), population_mean, population_sd/sqrt(n)), col = grey(.8), lwd = 3)
+```
+
+
